@@ -8,16 +8,16 @@ from langchain_pinecone import PineconeVectorStore
 #from langchain.chains.retrieval_qa.base.RetrievalQA
 from langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
 
-def run_llm(query:str, chat_history: List[Tuple[str,Any]]) -> Any:
-    """Function which retrieves a RetreivalQA Chain completion based on PineconeVector store documents and query input fed. 
+def run_llm(query:str, chat_history: List[Tuple[str,Any]]) -> str:
+    """Function which retrieves a ConversationalRetrievalChain Chain completion based on PineconeVector store documents and query input fed. 
     
-    ChatOpenAI is used as LLM model for LangChain's RetrievalQA and OpenAIEmbeddings is used to defined the embedding required by PineconeVectorStore with index_name referencing to PINECONE_INDEX variable of .env file. 
+    ChatOpenAI is used as LLM model for LangChain's ConversationalRetrievalChain and OpenAIEmbeddings is used to defined the embedding required by PineconeVectorStore with index_name referencing to PINECONE_INDEX variable of .env file. 
 
     Args:
         query (str): Input prompt to be fed into Retrieval QA
 
     Returns:
-        Any: Retrieval QA Chain Completion based on the model used.
+        str: ConversationalRetrievalChain completion based on the model used.
     """
     # Define embedding to be used (also used for indexing doc chunks)
     embeddings = OpenAIEmbeddings(
@@ -31,8 +31,9 @@ def run_llm(query:str, chat_history: List[Tuple[str,Any]]) -> Any:
     )
     #LLM
     llm = ChatOpenAI(verbose=True, temperature=0, model="gpt-3.5-turbo")
+
+    ## Old code
     # Use RetrievalChain with .from_chain for simple RAG on document without conversation
-    
     # qa = RetrievalQA.from_chain_type(
     #     llm=llm,
     #     chain_type="stuff",
@@ -56,7 +57,6 @@ def run_llm(query:str, chat_history: List[Tuple[str,Any]]) -> Any:
     )
 
     return qa.invoke({"question": query, "chat_history": chat_history})
-
 
 if __name__ == "__main__":
     # Call our function
